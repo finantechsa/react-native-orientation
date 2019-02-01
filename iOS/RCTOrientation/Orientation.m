@@ -162,7 +162,7 @@ RCT_EXPORT_METHOD(lockToPortrait)
     NSLog(@"Locked to Portrait");
   #endif
 
-  UIInterfaceOrientationMask portraitOrientations = UIInterfaceOrientationMaskPortrait |= UIInterfaceOrientationMaskPortraitUpsideDown;
+  UIInterfaceOrientationMask portraitOrientations = UIInterfaceOrientationMaskPortrait | UIInterfaceOrientationMaskPortraitUpsideDown;
 
   BOOL isPad = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad;
 
