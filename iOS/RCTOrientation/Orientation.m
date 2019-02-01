@@ -12,11 +12,23 @@
 @implementation Orientation
 @synthesize bridge = _bridge;
 
-static UIInterfaceOrientationMask _orientation = UIInterfaceOrientationMaskAllButUpsideDown;
+static UIInterfaceOrientationMask _orientation = 0;
 + (void)setOrientation: (UIInterfaceOrientationMask)orientation {
   _orientation = orientation;
 }
 + (UIInterfaceOrientationMask)getOrientation {
+
+  if(_orientation == 0) {
+
+    BOOL isPad = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad;
+
+    if(isPad) {
+      _orientation = UIInterfaceOrientationMaskAll;
+    } else {
+      _orientation = UIInterfaceOrientationMaskAllButUpsideDown;
+    }
+  }
+
   return _orientation;
 }
 
@@ -156,10 +168,19 @@ RCT_EXPORT_METHOD(lockToPortrait)
   #if DEBUG
     NSLog(@"Locked to Portrait");
   #endif
-  [Orientation setOrientation:UIInterfaceOrientationMaskPortrait];
+
+  UIInterfaceOrientationMask portraitOrientations = UIInterfaceOrientationMaskPortrait;
+
+  BOOL isPad = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad;
+
+  if(isPad) {
+    portraitOrientations |= UIInterfaceOrientationMaskPortraitUpsideDown;
+  }
+
+  [Orientation setOrientation:portraitOrientations];
   [[NSOperationQueue mainQueue] addOperationWithBlock:^ {
     [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
-    [[UIDevice currentDevice] setValue:[NSNumber numberWithInteger: UIInterfaceOrientationPortrait] forKey:@"orientation"];
+    [[UIDevice currentDevice] setValue:[NSNumber numberWithInteger: portraitOrientations] forKey:@"orientation"];
   }];
 
 }
@@ -218,7 +239,16 @@ RCT_EXPORT_METHOD(unlockAllOrientations)
   #if DEBUG
     NSLog(@"Unlock All Orientations");
   #endif
-  [Orientation setOrientation:UIInterfaceOrientationMaskAllButUpsideDown];
+
+  UIInterfaceOrientationMask allOrientations = UIInterfaceOrientationMaskAllButUpsideDown;
+
+  BOOL isPad = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad;
+
+  if(isPad) {
+    allOrientations |= UIInterfaceOrientationMaskPortraitUpsideDown;
+  }
+
+  [Orientation setOrientation:allOrientations];
 //  AppDelegate *delegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
 //  delegate.orientation = 3;
 }
