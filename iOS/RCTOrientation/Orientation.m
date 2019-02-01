@@ -19,14 +19,7 @@ static UIInterfaceOrientationMask _orientation = 0;
 + (UIInterfaceOrientationMask)getOrientation {
 
   if(_orientation == 0) {
-
-    BOOL isPad = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad;
-
-    if(isPad) {
       _orientation = UIInterfaceOrientationMaskAll;
-    } else {
-      _orientation = UIInterfaceOrientationMaskAllButUpsideDown;
-    }
   }
 
   return _orientation;
@@ -169,13 +162,9 @@ RCT_EXPORT_METHOD(lockToPortrait)
     NSLog(@"Locked to Portrait");
   #endif
 
-  UIInterfaceOrientationMask portraitOrientations = UIInterfaceOrientationMaskPortrait;
+  UIInterfaceOrientationMask portraitOrientations = UIInterfaceOrientationMaskPortrait |= UIInterfaceOrientationMaskPortraitUpsideDown;
 
   BOOL isPad = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad;
-
-  if(isPad) {
-    portraitOrientations |= UIInterfaceOrientationMaskPortraitUpsideDown;
-  }
 
   [Orientation setOrientation:portraitOrientations];
   [[NSOperationQueue mainQueue] addOperationWithBlock:^ {
@@ -240,14 +229,7 @@ RCT_EXPORT_METHOD(unlockAllOrientations)
     NSLog(@"Unlock All Orientations");
   #endif
 
-  UIInterfaceOrientationMask allOrientations = UIInterfaceOrientationMaskAllButUpsideDown;
-
-  BOOL isPad = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad;
-
-  if(isPad) {
-    allOrientations |= UIInterfaceOrientationMaskPortraitUpsideDown;
-  }
-
+  UIInterfaceOrientationMask allOrientations = UIInterfaceOrientationMaskAll;
   [Orientation setOrientation:allOrientations];
 //  AppDelegate *delegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
 //  delegate.orientation = 3;
