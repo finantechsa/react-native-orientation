@@ -29,6 +29,7 @@ static UIInterfaceOrientationMask _orientation = 0;
 {
   if ((self = [super init])) {
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(deviceOrientationDidChange:) name:@"UIDeviceOrientationDidChangeNotification" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(deviceOrientationWillChange:) name:@"DeviceOrientationWillChange" object:nil];
   }
   return self;
 
@@ -52,6 +53,16 @@ static UIInterfaceOrientationMask _orientation = 0;
 
   [self.bridge.eventDispatcher sendDeviceEventWithName:@"orientationDidChange"
                                               body:@{@"orientation": [self getOrientationStr:orientation]}];
+
+}
+
+- (void)deviceOrientationWillChange: (NSNotification *) notification {
+
+  UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
+
+  [self.bridge.eventDispatcher sendDeviceEventWithName:@"orientationWillChange"
+                                              body:@{@"orientation": [self getOrientationStr:orientation]}];
+
 
 }
 
